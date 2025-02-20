@@ -29,6 +29,8 @@ namespace P2FixAnAppDotNetCode.Controllers
         public RedirectToActionResult AddToCart(int id) //resultat du clic sur un boutton qui va declacher quelque chose.
         {
             _logger.LogInformation($"AddToCart() a été appelée avec l'ID {id} !");
+            _logger.LogInformation($"🔍 Recherche du produit avec l'ID : {id}");
+
 
             Product product = _productService.GetProductById(id);
 
