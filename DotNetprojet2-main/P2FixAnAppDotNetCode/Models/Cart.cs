@@ -108,7 +108,7 @@ namespace P2FixAnAppDotNetCode.Models
             // ➡️ Où faut-il appliquer cette recherche ?
             // ➡️ Quelle propriété d’un `CartLine` contient l’ID du produit ?
             // ➡️ Quelle condition doit être utilisée pour comparer les ID ?
-            var cartLine = _cartLines.FirstOrDefault(line => line.Product.Id == product.Id);
+            CartLine cartLine = _cartLines.FirstOrDefault(line => line.Product.Id == product.Id);
 
             // 🛠️ Étape 3 : Vérifier si le produit est trouvé
             // ➡️ Si `cartLine` est `null`, afficher un message indiquant que le produit n'est pas dans le panier.
