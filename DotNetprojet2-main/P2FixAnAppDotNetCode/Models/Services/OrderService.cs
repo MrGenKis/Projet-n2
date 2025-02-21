@@ -34,8 +34,17 @@ namespace P2FixAnAppDotNetCode.Models.Services
         /// </summary>
         private void UpdateInventory()
         {
+            // 🛠️ Étape 1 : Vérifie que `_productService.UpdateProductQuantities()` est bien appelée.
+            // ➡️ Ajoute un message pour vérifier que cette méthode est exécutée.
+            Console.WriteLine("UpdateInventory est appelée");
+
             _productService.UpdateProductQuantities(_cart as Cart);
+
+            // 🛠️ Étape 2 : Vérifie que `_cart.Clear()` n'efface pas le panier avant que les quantités ne soient mises à jour.
+            // ➡️ Si le panier est vidé trop tôt, les quantités seront toujours nulles au moment de l’update.
+            Console.WriteLine(" Panier vidé après mise à jour du stock");
             _cart.Clear();
         }
+
     }
 }

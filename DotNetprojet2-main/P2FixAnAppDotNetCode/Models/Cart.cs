@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 
 namespace P2FixAnAppDotNetCode.Models
@@ -94,7 +96,6 @@ namespace P2FixAnAppDotNetCode.Models
             // 🛠️ Étape 1 : Vérifier si `product` est valide
             // ➡️ Si `product` est `null`, afficher un message d'erreur avec `Debug.WriteLine()`.
             // ➡️ Arrêter la méthode (`return;`) pour éviter de traiter un produit invalide.
-
             if (product == null)
             {
                 // Ajoute un message Debug pour indiquer que le produit est invalide.
@@ -104,57 +105,57 @@ namespace P2FixAnAppDotNetCode.Models
 
             // 🛠️ Étape 2 : Vérifier si le produit existe dans `_cartLines`
             // ➡️ Utiliser `.FirstOrDefault()` pour chercher une `CartLine` qui contient `product.Id`.
-            // ➡️ Cette méthode va chercher la première ligne du panier contenant le produit.
             // ➡️ Où faut-il appliquer cette recherche ?
             // ➡️ Quelle propriété d’un `CartLine` contient l’ID du produit ?
             // ➡️ Quelle condition doit être utilisée pour comparer les ID ?
-
             var cartLine = _cartLines.FirstOrDefault(line => line.Product.Id == product.Id);
 
-
-
-            // 🛠️ Vérifier si `cartLine` est `null` (le produit n'est pas trouvé dans le panier).
-            // ➡️ Si `cartLine` est `null`, afficher un message avec `Debug.WriteLine()`.
-            // ➡️ Quel message afficher pour indiquer que le produit ne se trouve pas dans le panier ?
-            // ➡️ Arrêter la méthode (`return;`) pour éviter d’exécuter le reste du code inutilement.
-
-            if ( cartLine == null )
+            // 🛠️ Étape 3 : Vérifier si le produit est trouvé
+            // ➡️ Si `cartLine` est `null`, afficher un message indiquant que le produit n'est pas dans le panier.
+            // ➡️ Arrêter la méthode (`return;`) si le produit n'est pas trouvé.
+            if (cartLine == null)
             {
-                Debug.WriteLine("Le produit n'a pas ete trouver dans le panier"); // ➡️ Ajouter un message Debug pour indiquer que le produit n’a pas été trouvé dans le panier.
+                // ➡️ Quel message clair peux-tu afficher pour indiquer que le produit n’est pas trouvé dans le panier ?
+                Debug.WriteLine("Le produit n'a pas été trouvé dans le panier.");
                 return;
-            }else
-            {
-                // 🛠️ Étape 3 : Supprimer la `CartLine` du panier
-                // ➡️ Si la ligne a été trouvée, la retirer de `_cartLines`.
-                // ➡️ Utiliser `.Remove()` pour supprimer l'élément de la liste.
-
-
-                _cartLines.Remove(cartLine);
-
-                // 🛠️ Étape 4 : Afficher un message de confirmation
-                // ➡️ Utiliser `Debug.WriteLine()` pour indiquer qu'un produit a bien été supprimé du panier.
-                Debug.WriteLine($" Le produit {product.Name} a bien été supprimer du produit");
-
-                // 🛠️ Étape 5 : Vérifier si le panier est vide après la suppression
-                // ➡️ Si `_cartLines` ne contient plus aucun élément, afficher un message indiquant que le panier est désormais vide.
-                // ➡️ Quelle propriété ou méthode permet de vérifier si une liste est vide ?
-
-                bool test =_cartLines.Any();
-
-                
-                if(test == false)
-                {
-                    Debug.WriteLine("La panier est vide");
-                }
-
             }
 
+            // 🛠️ Étape 4 : Vérifier la quantité du produit dans le panier
+            // ➡️ Vérifier si la quantité du produit (`cartLine.Quantity`) est supérieure à 1.
+            // ➡️ Si c'est le cas, décrémente simplement la quantité de 1.
+            // ➡️ Sinon, si la quantité est égale à 1, supprimer complètement la `CartLine` du panier.
+            // ➡️ Quelle instruction permet de réduire une valeur de 1 ?
+            // ➡️ Quelle méthode permet de supprimer complètement un élément d'une liste ?
+
+            if (cartLine.Quantity > 1)
+            {
+                cartLine.Quantity -= 1;
+                Debug.WriteLine($" Le produit {product.Name} a bien été éte reduit de une quantité");
+            }
+            else if(cartLine.Quantity == 1)
+            {
+                _cartLines.Remove(cartLine);
+                Debug.WriteLine($" Le produit {product.Name} a bien été supprimer du produit");
+            }
+
+            // 🛠️ Étape 5 : Afficher un message de confirmation selon le cas
+            // ➡️ Utilise `Debug.WriteLine()` pour indiquer que la quantité a été réduite d'un produit ou qu'un produit a été complètement supprimé.
+
+           
+
+            // 🛠️ Étape 6 : Vérifier si le panier est vide après la suppression
+            // ➡️ Quelle propriété ou méthode permet de vérifier si une liste est vide ?
+            // ➡️ Si le panier est vide, affiche un message indiquant que le panier est désormais vide.
+
+            bool test = _cartLines.Any();
 
 
+            if (test == false)
+            {
+                Debug.WriteLine("La panier est vide");
+            }
 
-
-
-
+            // (Ajoute tes vérifications et conditions ici, sans réponses données !)
         }
 
 
@@ -225,11 +226,18 @@ namespace P2FixAnAppDotNetCode.Models
             // ➡️ Comment savoir si `_cartLines` contient des éléments ?
             // ➡️ Si le panier est vide, afficher un message avec `Debug.WriteLine()` et retourner 0.
 
+            if (!_cartLines.Any())
+            {
+                Debug.WriteLine("Le panier est vide");
+                return 0;
+            }
 
 
             // 🛠️ Étape 2 : Obtenir la valeur totale du panier.
             // ➡️ Quelle méthode as-tu déjà créée qui calcule la valeur totale du panier ?
             // ➡️ Appelle cette méthode et stocke son résultat dans une variable.
+
+            var valeurPanier = GetTotalValue();
 
 
 
@@ -238,6 +246,14 @@ namespace P2FixAnAppDotNetCode.Models
             // ➡️ Additionner les quantités (`line.Quantity`) pour obtenir le total de produits.
             // ➡️ Stocker ce total dans une variable.
 
+            double quantité = 0;
+
+            foreach (var line in _cartLines)
+            {
+
+                quantité += line.Quantity;
+                
+            }
 
 
             // 🛠️ Étape 4 : Calculer la valeur moyenne.
@@ -245,16 +261,30 @@ namespace P2FixAnAppDotNetCode.Models
             // ➡️ Assure-toi de gérer le cas où le total de produits est égal à zéro pour éviter une division par zéro.
             // ➡️ Stocker le résultat dans une variable `average`.
 
+            double average = 0;
+
+            if (quantité == 0)
+            {
+                Debug.WriteLine("Erreur rien dans le panier");
+                return 0;
+            }
+         
+                average = valeurPanier / quantité;
 
 
-            // 🛠️ Étape 5 : Afficher la valeur moyenne avant de la retourner.
-            // ➡️ Utilise `Debug.WriteLine()` pour afficher la valeur moyenne (`average`).
-            // ➡️ Quel message clair peux-tu afficher pour indiquer qu'il s'agit de la moyenne des produits du panier ?
+                // 🛠️ Étape 5 : Afficher la valeur moyenne avant de la retourner.
+                // ➡️ Utilise `Debug.WriteLine()` pour afficher la valeur moyenne (`average`).
+                // ➡️ Quel message clair peux-tu afficher pour indiquer qu'il s'agit de la moyenne des produits du panier ?
+
+
+
+                Debug.WriteLine($"La moyenne du panier est de {average}");
+           
 
 
 
             // 🛠️ Étape 6 : Retourner la valeur moyenne calculée.
-
+            return average;
         }
 
 
@@ -263,23 +293,71 @@ namespace P2FixAnAppDotNetCode.Models
         /// </summary>
         public Product FindProductInCartLines(int productId)
         {
-            // 🛠️ Étape 10 : Trouver un produit dans `_cartLines`.
-            // ➡️ Utiliser `.FirstOrDefault()` pour chercher un produit par `productId`.
-            // ➡️ Retourner `Product` s'il existe, sinon `null`.
+            // 🛠️ Étape 1 : Vérifier si le panier est vide.
+            // ➡️ Comment savoir si `_cartLines` contient des éléments ?
+            // ➡️ Si le panier est vide, afficher un message avec `Debug.WriteLine()` et retourner `null`.
+            if (!_cartLines.Any())
+            {
+                Debug.WriteLine("Le panier est vide");
+                return null;
+            }
 
-            return null; // ❌ Remplacer par la bonne recherche.
+
+            // 🛠️ Étape 2 : Rechercher le produit dans `_cartLines`.
+            // ➡️ Quelle méthode peux-tu utiliser pour trouver un élément spécifique dans une liste en C# ?
+            // ➡️ Utilise `.FirstOrDefault()` pour rechercher une `CartLine` dont le produit correspond à l'ID donné (`productId`).
+            // ➡️ Quelle condition peux-tu utiliser dans `.FirstOrDefault()` pour comparer l'ID du produit ?
+           
+            var produit = _cartLines.FirstOrDefault(line => line.Product.Id == productId);
+
+
+
+            // 🛠️ Étape 3 : Vérifier si le produit a été trouvé.
+            // ➡️ Si le produit n'est pas trouvé (`null`), afficher un message avec `Debug.WriteLine()` et retourner `null`.
+            // ➡️ Quel message clair peux-tu afficher pour indiquer que le produit n’est pas trouvé dans le panier ?
+
+            if (produit == null)
+            {
+                Debug.WriteLine("Le produit n'a pas ete trouve");
+                return null;
+            }
+
+
+
+            // 🛠️ Étape 4 : Retourner le produit trouvé.
+            // ➡️ Si le produit a été trouvé, retourner le produit (`Product`) contenu dans la `CartLine` trouvée.
+            return produit.Product;
+
         }
+
 
         /// <summary>
         /// Get a specific cartline by its index
         /// </summary>
         public CartLine GetCartLineByIndex(int index)
         {
-            // 🛠️ Étape 11 : Récupérer une ligne spécifique du panier.
-            // ➡️ Vérifier que l'index est valide.
-            // ➡️ Retourner `CartLine` correspondant.
+            // 🛠️ Étape 1 : Vérifier que l'index est valide.
+            // ➡️ Comment peux-tu vérifier que l'index ne dépasse pas la taille de la liste ?
+            // ➡️ Utilise une condition pour vérifier si l'index est inférieur à 0 ou supérieur ou égal à `_cartLines.Count`.
+            // ➡️ Si l'index n'est pas valide, affiche un message avec `Debug.WriteLine()` et retourne `null`.
 
-            return Lines.ToArray()[index]; // ❌ Vérifier que l'index ne dépasse pas la taille de la liste.
+            // (Fais ta vérification ici)
+            if (index < 0 || index >= _cartLines.Count)
+            {
+                Debug.WriteLine("l'index n'es pas valide");
+                return null;
+
+            }
+
+
+
+            // 🛠️ Étape 2 : Si l'index est valide, retourne la `CartLine` correspondante.
+            // ➡️ Comment accéder à un élément précis d'une liste en utilisant son index en C# ?
+            // ➡️ Retourne l'élément de `_cartLines` correspondant à l'index.
+
+            // (Retourne l'élément ici)
+            return _cartLines[index];
+
         }
 
         /// <summary>
@@ -287,10 +365,31 @@ namespace P2FixAnAppDotNetCode.Models
         /// </summary>
         public void Clear()
         {
-            // 🛠️ Étape 12 : Vider complètement le panier.
-            // ➡️ Supprimer tous les éléments de `_cartLines`.
+            // 🛠️ Étape 1 : Vérifier si le panier contient des éléments.
+            // ➡️ Comment peux-tu vérifier si `_cartLines` est vide ou non ?
+            // ➡️ Si le panier est déjà vide, affiche un message avec `Debug.WriteLine()` et arrête la méthode (`return;`).
 
+            // (Ajoute ta vérification ici)
+            if (!_cartLines.Any())
+            {
+                Debug.WriteLine("Le panier est vide");
+                return;
+            }
+
+
+            // 🛠️ Étape 2 : Vider complètement le panier.
+            // ➡️ Quelle méthode de la classe `List` peux-tu utiliser pour supprimer tous les éléments d'une liste en une seule opération ?
+            // ➡️ Applique cette méthode à `_cartLines`.
+
+            _cartLines.Clear();
+
+
+            // 🛠️ Étape 3 : Vérifier que le panier est bien vidé.
+            // ➡️ Ajoute un message avec `Debug.WriteLine()` pour confirmer que le panier a été vidé.
+
+            Debug.WriteLine("La panier est bien vide");
         }
+
     }
 
     public class CartLine

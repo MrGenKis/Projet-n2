@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 
 namespace P2FixAnAppDotNetCode.Models.Services
@@ -14,32 +15,43 @@ namespace P2FixAnAppDotNetCode.Models.Services
         public void ChangeUiLanguage(HttpContext context, string language)
         {
             string culture = SetCulture(language);
+            Debug.WriteLine($"🌐 Langue choisie : {language}, Culture appliquée : {culture}");
             UpdateCultureCookie(context, culture);
         }
+
 
         /// <summary>
         /// Set the culture
         /// </summary>
         public string SetCulture(string language)
         {
+            // 🛠️ Étape 3 : Initialiser une variable pour stocker la culture.
+            // ➡️ Quelle valeur initiale donner à `culture` pour être sûr qu’elle sera définie correctement plus tard ?
             string culture = "";
-            // TODO complete the code 
-            // Default language is "en", french is "fr" and spanish is "es".
 
-            switch (culture)
+            // 🛠️ Étape 4 : Attribuer la bonne culture en fonction de la langue passée en paramètre.
+            // ➡️ Actuellement, ton switch utilise `culture`. Est-ce la bonne variable à comparer ?
+            // ➡️ Quelle variable dois-tu utiliser pour décider quelle culture appliquer ? (regarde les paramètres de la méthode)
+
+            switch (language.ToLower()) 
             {
-                case "french" :
-                        language = "fr";
-                break;
-            case "spanish":
-                language = "es";
-                break;
+                case "french": // 🛠️ Étape 5 : Vérifier la valeur exacte à comparer
+                    // ➡️ Quel est le texte exact passé en paramètre ? "french", "French", "fr" ?
+                    culture = "fr"; // ❌ Vérifier si tu modifies la bonne variable ici
+                    break;
+                case "spanish":
+                    culture = "es"; // ❌ Vérifier si tu modifies la bonne variable ici
+                    break;
+                default:
+                    culture = "en"; // ❌ Vérifier si tu modifies la bonne variable ici
+                    break;
+            }
 
-            default:
-            language = "en"; 
-            break;
-        }
-            return culture;
+            // 🛠️ Étape 6 : Vérifier quelle variable tu dois retourner
+            // ➡️ Actuellement tu retournes `culture`, mais est-ce que `culture` a été modifiée dans le switch ?
+            // ➡️ Quelle variable contient maintenant la bonne culture que tu veux retourner ?
+
+            return culture; // ❌ Remplacer `culture` par la bonne variable
         }
 
         /// <summary>
@@ -47,9 +59,13 @@ namespace P2FixAnAppDotNetCode.Models.Services
         /// </summary>
         public void UpdateCultureCookie(HttpContext context, string culture)
         {
+            Debug.WriteLine($"🍪 Mise à jour du cookie avec la culture : {culture}");
+
             context.Response.Cookies.Append(
                 CookieRequestCultureProvider.DefaultCookieName,
-                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)));
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture))
+            );
         }
+
     }
 }

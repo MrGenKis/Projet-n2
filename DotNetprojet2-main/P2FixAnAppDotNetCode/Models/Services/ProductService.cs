@@ -111,6 +111,13 @@ namespace P2FixAnAppDotNetCode.Models.Services
                         Console.WriteLine("⚠️ Attention : Stock insuffisant !");
                         product.Stock = 0; // Éviter un stock négatif.
                     }
+
+                    // 🛠️ Étape 9 : Sauvegarder les modifications du produit dans la base de données.
+                    // ➡️ Quelle méthode du `_productRepository` dois-tu appeler pour mettre à jour les stocks du produit ?
+                    // ➡️ Où dois-tu appeler cette méthode pour enregistrer les modifications ?
+                    _productRepository.UpdateProductStocks(product.Id, line.Quantity);
+
+
                 }
 
             }
