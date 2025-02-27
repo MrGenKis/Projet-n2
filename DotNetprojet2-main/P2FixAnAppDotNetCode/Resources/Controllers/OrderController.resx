@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CartEmpty" xml:space="preserve">
-    <value>Sorry, your cart is empty !</value>
+    <value />
   </data>
   <data name="ErrorMissingAddress" xml:space="preserve">
-    <value>The Address field is required.</value>
+    <value />
   </data>
   <data name="ErrorMissingCity" xml:space="preserve">
-    <value>The City field is required.</value>
+    <value />
   </data>
   <data name="ErrorMissingCountry " xml:space="preserve">
-    <value>Le champ Pays est obligatoire.</value>
+    <value />
   </data>
   <data name="ErrorMissingName " xml:space="preserve">
-    <value>The Name field is required</value>
+    <value />
   </data>
 </root>
