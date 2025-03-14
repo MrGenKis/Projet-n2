@@ -25,100 +25,64 @@ namespace P2FixAnAppDotNetCode.Controllers
         [HttpPost]
         public IActionResult Index(Order order)
         {
+            Debug.WriteLine("🚀 Requête POST reçue !");
+            Debug.WriteLine($"📌 ModelState.IsValid : {ModelState.IsValid}");
+
             // 🛠️ Étape 1 : Vérifier si le panier est vide  
-            // ➡️ `_cart` est de type `ICart`, il faut donc le caster en `Cart` pour accéder aux lignes.  
-            // ➡️ Vérifie que `cart.Lines` contient des éléments en utilisant `.Any()`.  
-            // ➡️ Si le panier est vide, afficher un message d'erreur et renvoyer une vue avec une erreur.
-
-            Cart cart = _cart as Cart; // 🛠️ Convertir `_cart` en `Cart`
-
+            Cart cart = _cart as Cart;
             if (cart == null || !cart.Lines.Any())
             {
                 Debug.WriteLine("❌ Le panier est vide");
-                ModelState.AddModelError("", _localizer["CartEmpty"]); // 🛠️ Ajouter un message d'erreur localisé  
-                return View(order); // 🛠️ Renvoyer la vue avec l'erreur pour informer l'utilisateur  
+                ModelState.AddModelError("", _localizer["CartEmpty"]);
+                return View(order);
             }
 
             // 🛠️ Étape 2 : Vérifier que tous les champs obligatoires sont remplis  
-            // ➡️ Quels champs doivent être vérifiés ?  
-            // ➡️ Quelle méthode permet de vérifier si une chaîne est vide ou contient seulement des espaces ?  
-            // ➡️ Si un champ est vide, comment afficher un message d'erreur ?  
-            // ➡️ Où doit-on stocker ces erreurs pour qu'elles soient affichées sur la page ?
-
-            // 🛠️ Vérifier `Name`  
-            // ➡️ Comment vérifier si `order.Name` est vide ou contient uniquement des espaces ?  
-            // ➡️ Si c'est le cas, afficher un message d'erreur et l'ajouter à `ModelState`.  
-            // ➡️ Tester en soumettant le formulaire avec un champ vide.  
-            var name = order.Name;
-
-            if (string.IsNullOrWhiteSpace(name)) {
-                Debug.WriteLine("❌ Le champs name est vide");
-                ModelState.AddModelError("", _localizer["ErrorMissingName"]);
-                return View(order);
-            }
-
-            // 🛠️ Vérifier `Address`
-
-            var adresse = order.Address;
-
-            if (string.IsNullOrWhiteSpace(adresse))
+            if (string.IsNullOrWhiteSpace(order.Name))
             {
-                Debug.WriteLine("❌ Le champs adresse est vide");
-                ModelState.AddModelError("", _localizer["ErrorMissingAddress"]);
-                return View(order);
+                Debug.WriteLine("❌ Le champ Name est vide");
+                ModelState.AddModelError("Name", _localizer["ErrorMissingName"]);
             }
 
-
-            // 🛠️ Vérifier `City`
-
-            var city = order.City;
-
-            if (string.IsNullOrWhiteSpace(city))
+            if (string.IsNullOrWhiteSpace(order.Address))
             {
-                Debug.WriteLine("❌ Le champs name est vide");
-                ModelState.AddModelError("", _localizer["ErrorMissingCity"]);
-                return View(order);
+                Debug.WriteLine("❌ Le champ Address est vide");
+                ModelState.AddModelError("Address", _localizer["ErrorMissingAddress"]);
             }
 
-
-            // 🛠️ Vérifier `Country`
-
-            var country = order.Country;
-
-            if (string.IsNullOrWhiteSpace(country))
+            if (string.IsNullOrWhiteSpace(order.City))
             {
-                Debug.WriteLine("❌ Le champs name est vide");
-                ModelState.AddModelError("", _localizer["ErrorMissingCountry"]);
+                Debug.WriteLine("❌ Le champ City est vide");
+                ModelState.AddModelError("City", _localizer["ErrorMissingCity"]);
+            }
+
+            if (string.IsNullOrWhiteSpace(order.Country))
+            {
+                Debug.WriteLine("❌ Le champ Country est vide");
+                ModelState.AddModelError("Country", _localizer["ErrorMissingCountry"]);
+            }
+
+            // 🛠️ Étape 3 : Vérifier s'il y a des erreurs avant de continuer  
+            if (!ModelState.IsValid)
+            {
+                Debug.WriteLine("❌ Formulaire invalide, retour à la page !");
                 return View(order);
             }
 
+            // 🛠️ Étape 4 : Ajouter les articles du panier à la commande  
+            order.Lines = cart.Lines.ToArray();
 
+            // 🛠️ Étape 5 : Enregistrer la commande  
+            _orderService.SaveOrder(order);
 
-            // 🛠️ Vérifier s'il y a des erreurs avant de continuer  
-            // ➡️ Quelle propriété permet de savoir si des erreurs ont été ajoutées ?  
-            // ➡️ Si des erreurs sont présentes, afficher un message et renvoyer la vue.
-
-
-            // 🛠️ Étape 3 : Ajouter les articles du panier à la commande
-            // ➡️ Où sont stockés les produits dans `_cart` ?
-            // ➡️ Comment les ajouter dans `order.Lines` ?
-
-            // 🛠️ Étape 4 : Enregistrer la commande
-            // ➡️ Quelle méthode permet de sauvegarder la commande dans `_orderService` ?
-            // ➡️ À quel moment faut-il l'appeler ?
-
-            // 🛠️ Étape 5 : Rediriger vers la page de confirmation
-            // ➡️ Quelle action doit être appelée après avoir sauvegardé la commande ?
-
-
+            // 🛠️ Étape 6 : Rediriger vers la page de confirmation  
+            return RedirectToAction(nameof(Completed));
         }
 
         public ViewResult Completed()
         {
-            // 🛠️ Étape 6 : Vider le panier après la commande
-            // ➡️ Quelle méthode permet de supprimer tous les éléments du panier ?
-            // ➡️ À quel moment doit-on l'appeler pour s'assurer que le panier est bien vidé ?
-
+            _cart.Clear();
+            return View();
         }
     }
 }
