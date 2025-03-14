@@ -83,7 +83,7 @@ namespace P2FixAnAppDotNetCode.Models
                 };
 
                 _cartLines.Add(newLine);
-                Debug.WriteLine($"🛒 Produit ajouté : {product.Name}, Quantité : {quantity}");
+                Debug.WriteLine($"Produit ajouté : {product.Name}, Quantité : {quantity}");
 
 
         }
