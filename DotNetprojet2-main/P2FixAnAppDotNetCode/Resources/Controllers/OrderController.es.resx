@@ -120,4 +120,16 @@
   <data name="CartEmpty" xml:space="preserve">
     <value>Lo sentimos, su cesta está vacía !</value>
   </data>
+  <data name="ErrorMissingAddress" xml:space="preserve">
+    <value>El campo Dirección es obligatorio.</value>
+  </data>
+  <data name="ErrorMissingCity" xml:space="preserve">
+    <value>El campo Ciudad es obligatorio.</value>
+  </data>
+  <data name="ErrorMissingCountry " xml:space="preserve">
+    <value>El campo País es obligatorio.</value>
+  </data>
+  <data name="ErrorMissingName " xml:space="preserve">
+    <value>El campo Nombre es obligatorio.</value>
+  </data>
 </root>

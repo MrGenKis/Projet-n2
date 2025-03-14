@@ -9,21 +9,22 @@ namespace P2FixAnAppDotNetCode.Models
     {
         [BindNever]
         public int OrderId { get; set; }
+
         [BindNever]
         public ICollection<CartLine> Lines { get; set; }
 
-        [Required(ErrorMessage = "ErrorMissingName")]
+        [Required(ErrorMessage = "Il manque le nom")]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = "ErrorMissingAddress")]
+        [Required(ErrorMessage = "l'adresse est manquante")]
         public string Address { get; set; }
 
-        [Required(ErrorMessage = "ErrorMissingCity")]
+        [Required(ErrorMessage = "La ville est manquante")]
         public string City { get; set; }
 
         public string Zip { get; set; }
 
-        [Required(ErrorMessage = "ErrorMissingCountry")]
+        [Required(ErrorMessage = "Il manque le pays")]
         public string Country { get; set; }
 
         [BindNever]
