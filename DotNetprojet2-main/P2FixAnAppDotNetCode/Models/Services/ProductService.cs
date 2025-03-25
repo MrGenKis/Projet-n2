@@ -96,13 +96,11 @@ namespace P2FixAnAppDotNetCode.Models.Services
                     // 🛠️ Étape 5 : Afficher le stock avant modification
                     Console.WriteLine($"Le produit {product.Name} (ID: {product.Id}) a un stock disponible de : {product.Stock}");
 
-                    // 🛠️ Étape 6 : Réduire directement le stock
-                    product.Stock -= line.Quantity;
 
-                    // 🛠️ Étape 7 : Afficher le stock après modification
+                    // 🛠️ Étape 6 : Afficher le stock après modification
                     Console.WriteLine($"Nouveau stock du produit {product.Name} (ID: {product.Id}) : {product.Stock}");
 
-                    // 🛠️ Étape 8 : Vérifier si le stock devient négatif
+                    // 🛠️ Étape 7 : Vérifier si le stock devient négatif
                     // ➡️ Si `product.Stock < 0`, afficher un message d'erreur.
                     // ➡️ Comment éviter que `product.Stock` passe sous 0 ?
 

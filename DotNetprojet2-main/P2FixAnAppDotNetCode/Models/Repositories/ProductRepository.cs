@@ -1,53 +1,51 @@
-﻿using System.Collections.Generic;
+﻿using P2FixAnAppDotNetCode.Models.Repositories;
+using P2FixAnAppDotNetCode.Models;
 using System.Linq;
+using System.Collections.Generic;
+using System;
 
-namespace P2FixAnAppDotNetCode.Models.Repositories
+public class ProductRepository : IProductRepository
 {
-    /// <summary>
-    /// The class that manages product data
-    /// </summary>
-    public class ProductRepository : IProductRepository
+    // Liste statique qui simule un "stock" de produits en mémoire
+    private static readonly List<Product> _products;
+
+    static ProductRepository()
     {
-        private static List<Product> _products;
-
-        public ProductRepository()
+        // On remplit la liste _products une seule fois (constructeur statique)
+        _products = new List<Product>
         {
-            _products = new List<Product>();
-            GenerateProductData();
-        }
+            new Product(1, 10, 92.50, "Echo Dot", "(2nd Generation) - Black"),
+            new Product(2, 20, 9.99, "Anker 3ft / 0.9m Nylon Braided", "Tangle-Free Micro USB Cable"),
+            new Product(3, 30, 69.99, "JVC HAFX8R Headphone", "Riptidz, In-Ear"),
+            new Product(4, 40, 32.50, "VTech CS6114 DECT 6.0", "Cordless Phone"),
+            new Product(5, 50, 895.00, "NOKIA OEM BL-5J", "Cell Phone ")
+        };
+    }
 
-        /// <summary>
-        /// Generate the default list of products
-        /// </summary>
-        private void GenerateProductData()
+    // Retourne uniquement les produits qui ont encore du stock
+    public Product[] GetAllProducts()
+    {
+        return _products
+            .Where(p => p.Stock > 0)
+            .OrderBy(p => p.Name)
+            .ToArray();
+    }
+
+    // Mise à jour du stock en mémoire 
+    public void UpdateProductStocks(int productId, int quantity)
+    {
+        
+        var product = _products.FirstOrDefault(p => p.Id == productId);
+        if (product != null)
         {
-            int id = 0;
-            _products.Add(new Product(++id, 10, 92.50, "Echo Dot", "(2nd Generation) - Black"));
-            _products.Add(new Product(++id, 20, 9.99, "Anker 3ft / 0.9m Nylon Braided", "Tangle-Free Micro USB Cable"));
-            _products.Add(new Product(++id, 30, 69.99, "JVC HAFX8R Headphone", "Riptidz, In-Ear"));
-            _products.Add(new Product(++id, 40, 32.50, "VTech CS6114 DECT 6.0", "Cordless Phone"));
-            _products.Add(new Product(++id, 50, 895.00, "NOKIA OEM BL-5J", "Cell Phone "));
-        }
+            product.Stock -= quantity;
 
-        /// <summary>
-        /// Get all products from the inventory
-        /// </summary>
-        public Product[] GetAllProducts()
-        {
-            List<Product> list = _products.Where(p => p.Stock > 0).OrderBy(p => p.Name).ToList();
-            return list.ToArray();
-        }
+            
+            if (product.Stock < 0)
+                product.Stock = 0;
 
-        /// <summary>
-        /// Update the stock of a product in the inventory by its id
-        /// </summary>
-        public void UpdateProductStocks(int productId, int quantityToRemove)
-        {
-            Product product = _products.First(p => p.Id == productId);
-            product.Stock = product.Stock - quantityToRemove;
-
-            if (product.Stock == 0)
-                _products.Remove(product);
+        
+            Console.WriteLine($"[DEBUG] Stock mis à jour pour {product.Name} : {product.Stock} restant.");
         }
     }
 }
