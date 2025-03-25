@@ -10,7 +10,7 @@ namespace P2FixAnAppDotNetCode
         {
             BuildWebHost(args).Run();
             Console.WriteLine("Test : La console fonctionne !");
-            Console.ReadLine(); // Garde la console ouverte
+            Console.ReadLine(); 
 
         }
 

@@ -33,17 +33,23 @@ namespace P2FixAnAppDotNetCode.Models.Services
             // ➡️ Actuellement, ton switch utilise `culture`. Est-ce la bonne variable à comparer ?
             // ➡️ Quelle variable dois-tu utiliser pour décider quelle culture appliquer ? (regarde les paramètres de la méthode)
 
-            switch (language.ToLower()) 
+            switch (language.ToLower())
             {
-                case "french": // 🛠️ Étape 5 : Vérifier la valeur exacte à comparer
-                    // ➡️ Quel est le texte exact passé en paramètre ? "french", "French", "fr" ?
-                    culture = "fr"; // ❌ Vérifier si tu modifies la bonne variable ici
+                case "french":
+                case "fr":
+                   
+                    culture = "fr-FR";
                     break;
+
                 case "spanish":
-                    culture = "es"; // ❌ Vérifier si tu modifies la bonne variable ici
+                case "es":
+                    
+                    culture = "es-ES";
                     break;
+
+                
                 default:
-                    culture = "en"; // ❌ Vérifier si tu modifies la bonne variable ici
+                    culture = "en-US";
                     break;
             }
 
@@ -59,7 +65,7 @@ namespace P2FixAnAppDotNetCode.Models.Services
         /// </summary>
         public void UpdateCultureCookie(HttpContext context, string culture)
         {
-            Debug.WriteLine($"🍪 Mise à jour du cookie avec la culture : {culture}");
+            Debug.WriteLine($"Mise à jour du cookie avec la culture : {culture}");
 
             context.Response.Cookies.Append(
                 CookieRequestCultureProvider.DefaultCookieName,

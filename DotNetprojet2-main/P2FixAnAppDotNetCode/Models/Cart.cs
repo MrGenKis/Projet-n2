@@ -138,9 +138,6 @@ namespace P2FixAnAppDotNetCode.Models
                 Debug.WriteLine($" Le produit {product.Name} a bien été supprimer du produit");
             }
 
-            // 🛠️ Étape 5 : Afficher un message de confirmation selon le cas
-            // ➡️ Utilise `Debug.WriteLine()` pour indiquer que la quantité a été réduite d'un produit ou qu'un produit a été complètement supprimé.
-
            
 
             // 🛠️ Étape 6 : Vérifier si le panier est vide après la suppression
@@ -155,7 +152,7 @@ namespace P2FixAnAppDotNetCode.Models
                 Debug.WriteLine("La panier est vide");
             }
 
-            // (Ajoute tes vérifications et conditions ici, sans réponses données !)
+ 
         }
 
 
